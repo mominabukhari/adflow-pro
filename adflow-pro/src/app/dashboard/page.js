@@ -29,7 +29,7 @@ export default function Dashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center text-gray-800">
         Loading...
       </div>
     );
@@ -40,13 +40,29 @@ export default function Dashboard() {
 
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
 
-        <h1 className="text-2xl font-bold mb-4">
+        <h1 className="text-2xl font-bold mb-4 text-gray-900">
           Welcome 🎉
         </h1>
 
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-700 mb-6">
           {user.email}
         </p>
+
+        <div className="flex flex-col gap-3 mb-6">
+
+          <a href="/create-ad">
+            <button className="w-full bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+              Create Ad
+            </button>
+          </a>
+
+          <a href="/explore">
+            <button className="w-full bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700">
+              Explore Ads
+            </button>
+          </a>
+
+        </div>
 
         <button
           onClick={handleLogout}
