@@ -13,17 +13,28 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
     if (error) {
       alert(error.message);
-    } else {
-      alert("Register successful 🎉 Now login karo");
-      router.push("/login");
+      return;
     }
+
+    if (data.user) {
+      await supabase.from("users").insert([
+        {
+          id: data.user.id,
+          email: data.user.email,
+          role: "client", // default role
+        },
+      ]);
+    }
+
+    alert("Register successful 🎉 Now login");
+    router.push("/login");
   };
 
   return (
@@ -34,33 +45,29 @@ export default function Register() {
         className="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl"
       >
 
-        {/* TITLE */}
         <h1 className="text-3xl font-bold text-gray-900 text-center mb-6">
           Register
         </h1>
 
-        {/* EMAIL */}
         <input
           type="email"
           placeholder="Enter Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full mb-4 p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full mb-4 p-3 border border-gray-300 rounded-lg text-gray-900"
         />
 
-        {/* PASSWORD */}
         <input
           type="password"
           placeholder="Enter Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full mb-5 p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full mb-5 p-3 border border-gray-300 rounded-lg text-gray-900"
         />
 
-        {/* BUTTON */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
         >
           Register
         </button>

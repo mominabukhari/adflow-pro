@@ -13,11 +13,26 @@ export default function Admin() {
     fetchPayments();
   }, []);
 
+  // 🔐 UPDATED SECURITY CHECK (ROLE ADDED)
   const checkUser = async () => {
-    const { data } = await supabase.auth.getUser();
+    const { data: authData } = await supabase.auth.getUser();
 
-    if (!data.user) {
+    if (!authData.user) {
       router.push("/login");
+      return;
+    }
+
+    // 🔥 GET ROLE FROM USERS TABLE
+    const { data: userData } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", authData.user.id)
+      .single();
+
+    // ❌ ONLY ADMIN ALLOWED
+    if (userData?.role !== "admin") {
+      alert("Access denied ❌ Admin only");
+      router.push("/");
     }
   };
 
@@ -34,13 +49,11 @@ export default function Admin() {
 
   // ✅ VERIFY PAYMENT + PUBLISH AD
   const verifyPayment = async (paymentId, adId) => {
-    // 1. payment verify
     await supabase
       .from("payments")
       .update({ status: "verified" })
       .eq("id", paymentId);
 
-    // 2. ad publish
     await supabase
       .from("ads")
       .update({ status: "published" })
@@ -53,7 +66,6 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
 
-      {/* HEADER */}
       <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">
         Admin Panel
       </h1>
@@ -68,7 +80,6 @@ export default function Admin() {
             key={p.id}
             className="bg-white p-5 rounded-xl shadow mb-4 border"
           >
-
             <p className="text-gray-800 mb-2">
               💰 Transaction: {p.transaction_ref}
             </p>
@@ -83,7 +94,6 @@ export default function Admin() {
             >
               Verify & Publish Ad
             </button>
-
           </div>
         ))
       )}

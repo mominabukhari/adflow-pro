@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function Explore() {
   const router = useRouter();
+
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,33 +17,43 @@ export default function Explore() {
   const checkUser = async () => {
     const { data } = await supabase.auth.getUser();
 
-    if (!data.user) {
+    if (!data?.user) {
       router.push("/login");
-    } else {
-      fetchAds(data.user.id);
+      return;
     }
+
+    fetchAds();
   };
 
-  // ✅ Fetch ONLY current user's ads
-  const fetchAds = async (userId) => {
+  // 🔥 DEBUG + SAFE FETCH (MOST IMPORTANT)
+  const fetchAds = async () => {
+    setLoading(true);
+
     const { data, error } = await supabase
       .from("ads")
-      .select("*")
-      .eq("user_id", userId);
+      .select("*");
 
-    if (!error) {
-      setAds(data);
+    // 👇 DEBUG LOGS (CHECK IN CONSOLE)
+    console.log("ADS DATA:", data);
+    console.log("ADS ERROR:", error);
+
+    if (error) {
+      alert(error.message);
+      setAds([]);
+      setLoading(false);
+      return;
     }
 
+    setAds(data || []);
     setLoading(false);
   };
 
-  // ✅ Submit Payment
+  // 💰 PAYMENT
   const submitPayment = async (adId) => {
     const { error } = await supabase.from("payments").insert([
       {
         ad_id: adId,
-        transaction_ref: "TXN" + Math.floor(Math.random() * 10000),
+        transaction_ref: "TXN" + Date.now(),
       },
     ]);
 
@@ -53,38 +64,63 @@ export default function Explore() {
     }
   };
 
+  // 🗑 DELETE
+  const deleteAd = async (adId) => {
+    const { error } = await supabase
+      .from("ads")
+      .delete()
+      .eq("id", adId);
+
+    if (error) {
+      alert(error.message);
+    } else {
+      fetchAds();
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 p-6">
 
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">
-          My Ads
+          Explore Ads
         </h1>
 
         <button
           onClick={() => router.push("/create-ad")}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
         >
           + Create Ad
         </button>
       </div>
 
-      {/* LOADING */}
+      {/* CONTENT */}
       {loading ? (
-        <p className="text-center text-gray-600">Loading...</p>
+        <p className="text-center text-gray-700">Loading...</p>
       ) : ads.length === 0 ? (
-        <p className="text-center text-gray-600">No ads found</p>
+        <p className="text-center text-gray-700">
+          No ads found
+        </p>
       ) : (
         ads.map((ad) => (
           <div
             key={ad.id}
-            className="bg-white p-5 rounded-xl shadow mb-4 border border-gray-200"
+            className="bg-white border border-gray-200 rounded-2xl p-5 mb-4 shadow-md hover:shadow-lg transition"
           >
+
             {/* TITLE */}
-            <h2 className="text-xl font-bold text-gray-900">
-              {ad.title}
-            </h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-900">
+                {ad.title}
+              </h2>
+
+              {ad.status === "premium" && (
+                <span className="bg-yellow-500 text-white text-xs px-3 py-1 rounded-full">
+                  ⭐ Featured
+                </span>
+              )}
+            </div>
 
             {/* DESCRIPTION */}
             <p className="text-gray-700 mt-2">
@@ -93,36 +129,39 @@ export default function Explore() {
 
             {/* STATUS */}
             <p className="text-sm text-gray-500 mt-2">
-              Status: <span className="font-semibold">{ad.status}</span>
+              Status:{" "}
+              <span className="font-semibold">
+                {ad.status}
+              </span>
+            </p>
+
+            {/* PACKAGE (SAFE) */}
+            <p className="text-sm text-blue-600 mt-1">
+              Package: {ad.package_id || "Basic"}
             </p>
 
             {/* BUTTONS */}
-            <div className="mt-4 flex gap-3">
+            <div className="flex gap-3 mt-4">
 
-              {/* PAYMENT BUTTON */}
               <button
                 onClick={() => submitPayment(ad.id)}
-                className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg"
               >
-                Submit Payment
+                Pay
               </button>
 
-              {/* OPTIONAL DELETE */}
               <button
-                onClick={async () => {
-                  await supabase.from("ads").delete().eq("id", ad.id);
-                  fetchAds();
-                }}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                onClick={() => deleteAd(ad.id)}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
               >
                 Delete
               </button>
 
             </div>
+
           </div>
         ))
       )}
-
     </div>
   );
 }
