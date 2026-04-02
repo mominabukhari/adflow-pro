@@ -28,7 +28,7 @@ export default function Register() {
         {
           id: data.user.id,
           email: data.user.email,
-          role: "client", // default role
+          role: "client",
         },
       ]);
     }
@@ -38,39 +38,70 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300 p-4">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-4">
 
+      {/* background glow orbs (same system as login/dashboard) */}
+      <div className="absolute w-72 h-72 bg-purple-500 rounded-full blur-3xl opacity-30 top-10 left-10 animate-pulse"></div>
+      <div className="absolute w-72 h-72 bg-indigo-500 rounded-full blur-3xl opacity-30 bottom-10 right-10 animate-pulse"></div>
+      <div className="absolute w-72 h-72 bg-pink-500 rounded-full blur-3xl opacity-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+
+      {/* CARD */}
       <form
         onSubmit={handleRegister}
-        className="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl"
+        className="relative w-full max-w-md p-10 rounded-3xl 
+        bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl"
       >
 
-        <h1 className="text-3xl font-bold text-gray-900 text-center mb-6">
-          Register
+        {/* TITLE */}
+        <h1 className="text-4xl font-extrabold text-white text-center mb-2 tracking-wide">
+          Create Account 🚀
         </h1>
 
+        <p className="text-center text-white/60 mb-8 text-sm">
+          Join AdFlow Pro and start managing ads
+        </p>
+
+        {/* EMAIL */}
         <input
           type="email"
-          placeholder="Enter Email"
+          placeholder="Email Address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full mb-4 p-3 border border-gray-300 rounded-lg text-gray-900"
+          className="w-full mb-4 p-3 rounded-xl bg-white/5 text-white placeholder-white/40 
+          border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
         />
 
+        {/* PASSWORD */}
         <input
           type="password"
-          placeholder="Enter Password"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full mb-5 p-3 border border-gray-300 rounded-lg text-gray-900"
+          className="w-full mb-6 p-3 rounded-xl bg-white/5 text-white placeholder-white/40 
+          border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
         />
 
+        {/* BUTTON */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
+          className="w-full py-3 rounded-xl font-bold text-white
+          bg-gradient-to-r from-purple-600 to-indigo-600
+          hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-1
+          transition-all duration-300"
         >
-          Register
+          Register ✨
         </button>
+
+        {/* FOOTER */}
+        <p className="text-center text-white/50 text-sm mt-6">
+          Already have an account?{" "}
+          <span
+            onClick={() => router.push("/login")}
+            className="text-white font-semibold cursor-pointer hover:underline"
+          >
+            Login
+          </span>
+        </p>
 
       </form>
     </div>

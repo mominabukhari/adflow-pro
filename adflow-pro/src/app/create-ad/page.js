@@ -1,114 +1,367 @@
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import { supabase } from "../../lib/supabase";
+// import { useRouter } from "next/navigation";
+
+// export default function CreateAd() {
+//   const router = useRouter();
+
+//   const [user, setUser] = useState(null);
+
+//   const [form, setForm] = useState({
+//     title: "",
+//     description: "",
+//     media_url: "",
+//     type: "basic",
+//   });
+
+//   const [loading, setLoading] = useState(false);
+
+//   useEffect(() => {
+//     getUser();
+//   }, []);
+
+//   const getUser = async () => {
+//     const { data } = await supabase.auth.getUser();
+
+//     if (!data?.user) {
+//       alert("⚠️ You are not logged in!");
+//       router.push("/login");
+//       return;
+//     }
+
+//     setUser(data.user);
+//   };
+
+//   const packages = [
+//     { name: "basic", label: "Basic", days: 7, weight: 1, color: "border-gray-500/40" },
+//     { name: "standard", label: "Standard", days: 15, weight: 2, color: "border-blue-500/50" },
+//     { name: "premium", label: "Premium", days: 30, weight: 3, color: "border-purple-500/60" },
+//   ];
+
+//   const createAd = async (e) => {
+//     e.preventDefault();
+
+//     if (!user) {
+//       alert("User not loaded");
+//       return;
+//     }
+
+//     setLoading(true);
+
+//     const selectedPackage = packages.find(p => p.name === form.type);
+
+//     const { error } = await supabase.from("ads").insert([
+//       {
+//         user_id: user.id,
+//         title: form.title,
+//         description: form.description,
+//         media_url: form.media_url,
+//         type: form.type,
+//         package_weight: selectedPackage.weight,
+//         status: "draft",
+//       },
+//     ]);
+
+//     setLoading(false);
+
+//     if (error) {
+//       alert(error.message);
+//       return;
+//     }
+
+//     alert("Ad created! Now proceed to payment.");
+//     router.push("/explore");
+//   };
+
+//   return (
+//     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6">
+
+//       {/* glow background (premium SaaS feel) */}
+//       <div className="absolute w-80 h-80 bg-purple-600 rounded-full blur-3xl opacity-20 top-10 left-10 animate-pulse"></div>
+//       <div className="absolute w-80 h-80 bg-indigo-500 rounded-full blur-3xl opacity-20 bottom-10 right-10 animate-pulse"></div>
+
+//       {/* FORM CARD */}
+//       <form
+
+//         onSubmit={createAd}
+//         className="relative w-full max-w-md bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-3xl p-8"
+//       >
+
+//         {/* TITLE */}
+//         <h1 className="text-3xl font-extrabold text-center text-white mb-2">
+//           Create Ad 🚀
+//         </h1>
+
+//         <p className="text-center text-white/60 text-sm mb-6">
+//           Fill details to publish your advertisement
+//         </p>
+
+//         {/* INPUTS */}
+//         <input
+//           type="text"
+//           placeholder="Ad Title"
+//           required
+//           className="w-full p-3 mb-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-purple-400 transition"
+//           onChange={(e) =>
+//             setForm({ ...form, title: e.target.value })
+//           }
+//         />
+
+//         <textarea
+//           placeholder="Description"
+//           required
+//           className="w-full p-3 mb-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-purple-400 transition"
+//           onChange={(e) =>
+//             setForm({ ...form, description: e.target.value })
+//           }
+//         />
+
+//         <input
+//           type="text"
+//           placeholder="Image / YouTube URL"
+//           required
+//           className="w-full p-3 mb-5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-purple-400 transition"
+//           onChange={(e) =>
+//             setForm({ ...form, media_url: e.target.value })
+//           }
+//         />
+
+//         {/* PACKAGE SECTION */}
+//         <h3 className="mb-3 font-semibold text-white/80">
+//           Select Package
+//         </h3>
+
+//         {packages.map((pkg) => (
+//           <label
+//             key={pkg.name}
+//             className={`block p-3 mb-3 rounded-xl cursor-pointer border ${pkg.color} bg-white/5 hover:bg-white/10 transition`}
+//           >
+//             <input
+//               type="radio"
+//               name="package"
+//               value={pkg.name}
+//               checked={form.type === pkg.name}
+//               onChange={(e) =>
+//                 setForm({ ...form, type: e.target.value })
+//               }
+//             />
+
+//             <span className="ml-2 font-semibold text-white">
+//               {pkg.label}
+//             </span>
+
+//             <span className="ml-2 text-sm text-white/60">
+//               ({pkg.days} days)
+//             </span>
+//           </label>
+//         ))}
+
+//         {/* BUTTON */}
+//         <button
+//           type="submit"
+//           disabled={loading}
+//           className="w-full py-3 rounded-xl font-semibold text-white
+//           bg-gradient-to-r from-purple-600 to-indigo-600
+//           hover:shadow-lg hover:shadow-purple-500/30
+//           hover:-translate-y-1 transition-all duration-300"
+//         >
+//           {loading ? "Creating..." : "Create Ad ✨"}
+//         </button>
+
+//       </form>
+//     </div>
+//   );
+// }
+
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
+import { useRouter } from "next/navigation";
 
 export default function CreateAd() {
   const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [user, setUser] = useState(null);
+
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    media_url: "",
+    type: "basic",
+    transaction_id: "",              // ✅ added
+    payment_screenshot: "",          // ✅ added
+  });
+
   const [loading, setLoading] = useState(false);
 
-  const [packages, setPackages] = useState([]);
-  const [selectedPackage, setSelectedPackage] = useState("");
-
   useEffect(() => {
-    checkUser();
-    fetchPackages();
+    getUser();
   }, []);
 
-  const checkUser = async () => {
+  const getUser = async () => {
     const { data } = await supabase.auth.getUser();
-    if (!data?.user) router.push("/login");
+
+    if (!data?.user) {
+      alert("⚠️ You are not logged in!");
+      router.push("/login");
+      return;
+    }
+
+    setUser(data.user);
   };
 
-  const fetchPackages = async () => {
-    const { data } = await supabase.from("packages").select("*");
-    setPackages(data || []);
-  };
+  const packages = [
+    { name: "basic", label: "Basic", days: 7, weight: 1, color: "border-gray-500/40" },
+    { name: "standard", label: "Standard", days: 15, weight: 2, color: "border-blue-500/50" },
+    { name: "premium", label: "Premium", days: 30, weight: 3, color: "border-purple-500/60" },
+  ];
 
-  const handleSubmit = async (e) => {
+  const createAd = async (e) => {
     e.preventDefault();
 
-    if (!title || !description || !selectedPackage) {
-      alert("Please fill all fields");
+    if (!user) {
+      alert("User not loaded");
       return;
     }
 
     setLoading(true);
 
-    const { data: userData } = await supabase.auth.getUser();
+    const selectedPackage = packages.find(p => p.name === form.type);
 
     const { error } = await supabase.from("ads").insert([
       {
-        user_id: userData.user.id,
-        title,
-        description,
-        package_id: selectedPackage,
-        status: "submitted",
+        user_id: user.id,
+        title: form.title,
+        description: form.description,
+        media_url: form.media_url,
+        type: form.type,
+        package_weight: selectedPackage.weight,
+        status: "draft",
+        transaction_id: form.transaction_id,        // ✅ added
+        payment_screenshot: form.payment_screenshot // ✅ added
       },
     ]);
 
     setLoading(false);
 
-    if (error) alert(error.message);
-    else {
-      alert("Ad submitted 🚀");
-      router.push("/explore");
+    if (error) {
+      alert(error.message);
+      return;
     }
+
+    alert("Ad created! Now proceed to payment.");
+    router.push("/explore");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-200 via-gray-100 to-gray-300 p-4">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6">
 
-      <form className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl border border-gray-200"
-        onSubmit={handleSubmit}
+      <div className="absolute w-80 h-80 bg-purple-600 rounded-full blur-3xl opacity-20 top-10 left-10 animate-pulse"></div>
+      <div className="absolute w-80 h-80 bg-indigo-500 rounded-full blur-3xl opacity-20 bottom-10 right-10 animate-pulse"></div>
+
+      <form
+
+        onSubmit={createAd}
+        className="relative w-full max-w-md bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-3xl p-8"
       >
 
-        {/* TITLE FIX (VISIBLE NOW) */}
-        <h1 className="text-3xl font-bold text-gray-900 text-center mb-6">
-          Create Ad
+        <h1 className="text-3xl font-extrabold text-center text-white mb-2">
+          Create Ad 🚀
         </h1>
 
-        {/* INPUTS */}
+        <p className="text-center text-white/60 text-sm mb-6">
+          Fill details to publish your advertisement
+        </p>
+
         <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter Ad Title"
-          className="w-full mb-4 p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-blue-500"
+          type="text"
+          placeholder="Ad Title"
+          required
+          className="w-full p-3 mb-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-purple-400 transition"
+          onChange={(e) =>
+            setForm({ ...form, title: e.target.value })
+          }
         />
 
         <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter Ad Description"
-          className="w-full mb-4 p-3 border border-gray-300 rounded-lg text-gray-900 h-32 focus:outline-blue-500"
+          placeholder="Description"
+          required
+          className="w-full p-3 mb-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-purple-400 transition"
+          onChange={(e) =>
+            setForm({ ...form, description: e.target.value })
+          }
         />
 
-        {/* PACKAGE */}
-        <select
-          value={selectedPackage}
-          onChange={(e) => setSelectedPackage(e.target.value)}
-          className="w-full mb-5 p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-blue-500"
-        >
-          <option value="">Select Package</option>
+        {/* <input
+          type="text"
+          placeholder="Image / YouTube URL"
+          required
+          className="w-full p-3 mb-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-purple-400 transition"
+          onChange={(e) =>
+            setForm({ ...form, media_url: e.target.value })
+          } */}
+        {/* /> */}
 
-          {packages.map((pkg) => (
-            <option key={pkg.id} value={pkg.id}>
-              {pkg.name} - Rs {pkg.price}
-            </option>
-          ))}
-        </select>
+        {/* ✅ NEW FIELDS (ONLY ADDITION) */}
+        <input
+          type="text"
+          placeholder="Transaction ID"
+          className="w-full p-3 mb-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-purple-400 transition"
+          onChange={(e) =>
+            setForm({ ...form, transaction_id: e.target.value })
+          }
+        />
 
-        {/* BUTTON */}
+        <input
+          type="text"
+          placeholder="Payment Screenshot URL"
+          className="w-full p-3 mb-5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-purple-400 transition"
+          onChange={(e) =>
+            setForm({ ...form, payment_screenshot: e.target.value })
+          }
+        />
+
+        <h3 className="mb-3 font-semibold text-white/80">
+          Select Package
+        </h3>
+
+        {packages.map((pkg) => (
+          <label
+            key={pkg.name}
+            className={`block p-3 mb-3 rounded-xl cursor-pointer border ${pkg.color} bg-white/5 hover:bg-white/10 transition`}
+          >
+            <input
+              type="radio"
+              name="package"
+              value={pkg.name}
+              checked={form.type === pkg.name}
+              onChange={(e) =>
+                setForm({ ...form, type: e.target.value })
+              }
+            />
+
+            <span className="ml-2 font-semibold text-white">
+              {pkg.label}
+            </span>
+
+            <span className="ml-2 text-sm text-white/60">
+              ({pkg.days} days)
+            </span>
+          </label>
+        ))}
+
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
+          className="w-full py-3 rounded-xl font-semibold text-white
+          bg-gradient-to-r from-purple-600 to-indigo-600
+          hover:shadow-lg hover:shadow-purple-500/30
+          hover:-translate-y-1 transition-all duration-300"
         >
-          {loading ? "Submitting..." : "Submit Ad"}
+          {loading ? "Creating..." : "Create Ad ✨"}
         </button>
 
       </form>

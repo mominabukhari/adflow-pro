@@ -1,3 +1,132 @@
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import { supabase } from "../../lib/supabase";
+// import { useRouter } from "next/navigation";
+
+// export default function Explore() {
+//   const router = useRouter();
+
+//   const [ads, setAds] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     checkUser();
+//   }, []);
+
+//   const checkUser = async () => {
+//     const { data } = await supabase.auth.getUser();
+
+//     if (!data?.user) {
+//       router.push("/login");
+//       return;
+//     }
+
+//     fetchAds();
+//   };
+
+//   const fetchAds = async () => {
+//     setLoading(true);
+
+//     const { data, error } = await supabase.from("ads").select("*");
+
+//     if (error) {
+//       console.log(error.message);
+//       setAds([]);
+//       setLoading(false);
+//       return;
+//     }
+
+//     setAds(data || []);
+//     setLoading(false);
+//   };
+
+//   const getStatusColor = (status) => {
+//     const s = (status || "").toLowerCase().trim();
+
+//     if (s === "published") return "bg-green-100 text-green-800 border-green-300";
+//     if (s === "approved") return "bg-blue-100 text-blue-800 border-blue-300";
+//     if (s === "submitted") return "bg-yellow-100 text-yellow-800 border-yellow-300";
+
+//     return "bg-gray-100 text-gray-700 border-gray-300";
+//   };
+
+//   const getPackageType = (type) => {
+//     if (type === "premium") return "PREMIUM (7 DAYS)";
+//     if (type === "standard") return "STANDARD (3 DAYS)";
+//     return "BASIC (1 DAY)";
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gray-100 p-6">
+
+//       <div className="flex justify-between items-center mb-6">
+//         <h1 className="text-3xl font-bold text-gray-900">
+//           Explore Ads
+//         </h1>
+
+//         <button
+//           onClick={() => router.push("/create-ad")}
+//           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow"
+//         >
+//           + Create Ad
+//         </button>
+//       </div>
+
+//       {loading && (
+//         <p className="text-gray-700">Loading ads...</p>
+//       )}
+
+//       {!loading && ads.length === 0 && (
+//         <p className="text-gray-700">No ads available</p>
+//       )}
+
+//       {!loading && ads.length > 0 && (
+//         <div className="grid md:grid-cols-2 gap-4">
+
+//           {ads.map((ad) => (
+//             <div
+//               key={ad.id}
+//               className="bg-white p-5 rounded-xl shadow-md border"
+//             >
+
+//               {/* TITLE */}
+//               <h2 className="text-xl font-bold text-gray-900">
+//                 {ad.title}
+//               </h2>
+
+//               {/* DESCRIPTION */}
+//               <p className="text-gray-700 mt-2">
+//                 {ad.description}
+//               </p>
+
+//               {/* BADGES */}
+//               <div className="flex gap-2 mt-4 flex-wrap">
+
+//                 {/* STATUS */}
+//                 <span
+//                   className={`px-3 py-1 text-xs font-semibold rounded-full border ${getStatusColor(
+//                     ad.status
+//                   )}`}
+//                 >
+//                   {ad.status || "UNKNOWN"}
+//                 </span>
+
+//                 {/* PACKAGE TYPE */}
+//                 <span className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border border-purple-300">
+//                   {getPackageType(ad.type)}
+//                 </span>
+
+//               </div>
+
+//             </div>
+//           ))}
+
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,159 +138,138 @@ export default function Explore() {
 
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    checkUser();
+    fetchAds(); // ✅ NO LOGIN CHECK (PUBLIC PAGE)
   }, []);
 
-  const checkUser = async () => {
-    const { data } = await supabase.auth.getUser();
-
-    if (!data?.user) {
-      router.push("/login");
-      return;
-    }
-
-    fetchAds();
-  };
-
-  // 🔥 DEBUG + SAFE FETCH (MOST IMPORTANT)
   const fetchAds = async () => {
     setLoading(true);
 
     const { data, error } = await supabase
       .from("ads")
-      .select("*");
-
-    // 👇 DEBUG LOGS (CHECK IN CONSOLE)
-    console.log("ADS DATA:", data);
-    console.log("ADS ERROR:", error);
+      .select("*")
+      .eq("status", "published")
+      .order("is_featured", { ascending: false })
+      .order("package_weight", { ascending: false });
 
     if (error) {
-      alert(error.message);
+      console.log("ERROR:", error.message);
       setAds([]);
       setLoading(false);
       return;
     }
 
-    setAds(data || []);
+    const validAds = (data || []).filter((ad) => {
+      if (!ad.expire_at) return true;
+      return new Date(ad.expire_at) > new Date();
+    });
+
+    setAds(validAds);
     setLoading(false);
   };
 
-  // 💰 PAYMENT
-  const submitPayment = async (adId) => {
-    const { error } = await supabase.from("payments").insert([
-      {
-        ad_id: adId,
-        transaction_ref: "TXN" + Date.now(),
-      },
-    ]);
-
-    if (error) {
-      alert(error.message);
-    } else {
-      alert("Payment submitted 💰");
-    }
+  const getPackageType = (type) => {
+    if (type === "premium") return "PREMIUM (30 DAYS)";
+    if (type === "standard") return "STANDARD (15 DAYS)";
+    return "BASIC (7 DAYS)";
   };
 
-  // 🗑 DELETE
-  const deleteAd = async (adId) => {
-    const { error } = await supabase
-      .from("ads")
-      .delete()
-      .eq("id", adId);
-
-    if (error) {
-      alert(error.message);
-    } else {
-      fetchAds();
-    }
-  };
+  const filteredAds = ads.filter((ad) =>
+    ad.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 p-6">
+    <div className="min-h-screen bg-[#050816] text-white p-6 relative overflow-hidden">
+
+      {/* glow background */}
+      <div className="absolute w-[500px] h-[500px] bg-purple-600 blur-[160px] opacity-20 top-[-120px] left-[-120px]"></div>
+      <div className="absolute w-[500px] h-[500px] bg-blue-600 blur-[160px] opacity-20 bottom-[-120px] right-[-120px]"></div>
 
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Explore Ads
+      <div className="flex justify-between items-center mb-6 relative z-10">
+
+        <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-transparent bg-clip-text">
+          Explore Ads 🔥
         </h1>
 
         <button
           onClick={() => router.push("/create-ad")}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 
+          hover:scale-105 transition shadow-lg"
         >
           + Create Ad
         </button>
       </div>
 
-      {/* CONTENT */}
-      {loading ? (
-        <p className="text-center text-gray-700">Loading...</p>
-      ) : ads.length === 0 ? (
-        <p className="text-center text-gray-700">
-          No ads found
-        </p>
-      ) : (
-        ads.map((ad) => (
+      {/* SEARCH */}
+      <div className="relative z-10 mb-6">
+        <input
+          type="text"
+          placeholder="Search ads..."
+          className="w-full p-3 rounded-xl bg-white/10 border border-white/20 
+          text-white placeholder-white/50 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      {/* LOADING */}
+      {loading && <p className="text-white/70 animate-pulse">Loading ads...</p>}
+
+      {/* EMPTY */}
+      {!loading && filteredAds.length === 0 && (
+        <p className="text-white/60">No ads available</p>
+      )}
+
+      {/* GRID */}
+      <div className="grid md:grid-cols-3 gap-6 relative z-10">
+
+        {filteredAds.map((ad) => (
           <div
             key={ad.id}
-            className="bg-white border border-gray-200 rounded-2xl p-5 mb-4 shadow-md hover:shadow-lg transition"
+            className="group bg-white/5 border border-white/10 rounded-2xl overflow-hidden 
+            backdrop-blur-lg hover:scale-[1.03] transition shadow-lg"
           >
 
-            {/* TITLE */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">
-                {ad.title}
-              </h2>
+            <img
+              src={ad.media_url || "https://via.placeholder.com/300"}
+              className="w-full h-44 object-cover group-hover:scale-110 transition"
+            />
 
-              {ad.status === "premium" && (
-                <span className="bg-yellow-500 text-white text-xs px-3 py-1 rounded-full">
-                  ⭐ Featured
+            <div className="p-4">
+
+              <h2 className="text-lg font-bold">{ad.title}</h2>
+
+              <p className="text-white/60 text-sm mt-1">
+                {ad.description}
+              </p>
+
+              <div className="flex justify-between mt-3">
+
+                <span className="bg-purple-500/20 text-purple-300 px-2 py-1 rounded text-xs">
+                  {getPackageType(ad.type)}
                 </span>
+
+                {ad.is_featured && (
+                  <span className="bg-yellow-400/20 text-yellow-300 px-2 py-1 text-xs rounded">
+                    ⭐ Featured
+                  </span>
+                )}
+
+              </div>
+
+              {ad.expire_at && (
+                <p className="text-xs text-red-300 mt-2">
+                  Expires: {new Date(ad.expire_at).toLocaleDateString()}
+                </p>
               )}
-            </div>
-
-            {/* DESCRIPTION */}
-            <p className="text-gray-700 mt-2">
-              {ad.description}
-            </p>
-
-            {/* STATUS */}
-            <p className="text-sm text-gray-500 mt-2">
-              Status:{" "}
-              <span className="font-semibold">
-                {ad.status}
-              </span>
-            </p>
-
-            {/* PACKAGE (SAFE) */}
-            <p className="text-sm text-blue-600 mt-1">
-              Package: {ad.package_id || "Basic"}
-            </p>
-
-            {/* BUTTONS */}
-            <div className="flex gap-3 mt-4">
-
-              <button
-                onClick={() => submitPayment(ad.id)}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg"
-              >
-                Pay
-              </button>
-
-              <button
-                onClick={() => deleteAd(ad.id)}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
-              >
-                Delete
-              </button>
 
             </div>
-
           </div>
-        ))
-      )}
+        ))}
+
+      </div>
     </div>
   );
 }
