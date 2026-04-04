@@ -9,101 +9,133 @@ export default function Register() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
+      if (error) {
+        alert(error.message);
+        setLoading(false);
+        return;
+      }
 
-    if (data.user) {
-      await supabase.from("users").insert([
+      const user = data?.user;
+
+      if (!user) {
+        alert("User not created");
+        setLoading(false);
+        return;
+      }
+
+      // 👇 SAFE INSERT (status FIX added)
+      const { error: insertError } = await supabase.from("users").insert([
         {
-          id: data.user.id,
-          email: data.user.email,
+          id: user.id,
+          email: user.email,
           role: "client",
+          status: "active", // ✅ FIX ADDED
         },
       ]);
-    }
 
-    alert("Register successful 🎉 Now login");
-    router.push("/login");
+      if (insertError) {
+        alert(insertError.message);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(false);
+      alert("Register successful 🎉 Now login");
+      router.push("/login");
+
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6">
 
-      {/* background glow orbs (same system as login/dashboard) */}
-      <div className="absolute w-72 h-72 bg-purple-500 rounded-full blur-3xl opacity-30 top-10 left-10 animate-pulse"></div>
-      <div className="absolute w-72 h-72 bg-indigo-500 rounded-full blur-3xl opacity-30 bottom-10 right-10 animate-pulse"></div>
-      <div className="absolute w-72 h-72 bg-pink-500 rounded-full blur-3xl opacity-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="w-full max-w-5xl flex rounded-3xl overflow-hidden shadow-2xl">
 
-      {/* CARD */}
-      <form
-        onSubmit={handleRegister}
-        className="relative w-full max-w-md p-10 rounded-3xl 
-        bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl"
-      >
+        {/* LEFT FORM SIDE (SAME DESIGN) */}
+        <div className="w-full md:w-1/2 p-10 bg-white/10 backdrop-blur-2xl border-r border-white/20">
+          
+          <h1 className="text-3xl font-bold text-white text-center mb-8">
+            Register
+          </h1>
 
-        {/* TITLE */}
-        <h1 className="text-4xl font-extrabold text-white text-center mb-2 tracking-wide">
-          Create Account 🚀
-        </h1>
+          <form onSubmit={handleRegister} className="space-y-5">
 
-        <p className="text-center text-white/60 mb-8 text-sm">
-          Join AdFlow Pro and start managing ads
-        </p>
+            <div className="flex items-center border-b border-white/30 pb-2">
+              <span className="text-white mr-2">📧</span>
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-transparent outline-none text-white placeholder-white/50"
+                required
+              />
+            </div>
 
-        {/* EMAIL */}
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full mb-4 p-3 rounded-xl bg-white/5 text-white placeholder-white/40 
-          border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
-        />
+            <div className="flex items-center border-b border-white/30 pb-2">
+              <span className="text-white mr-2">🔒</span>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-transparent outline-none text-white placeholder-white/50"
+                required
+              />
+            </div>
 
-        {/* PASSWORD */}
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full mb-6 p-3 rounded-xl bg-white/5 text-white placeholder-white/40 
-          border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
-        />
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-full font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-105 transition-all duration-300"
+            >
+              {loading ? "Registering..." : "Register"}
+            </button>
+          </form>
 
-        {/* BUTTON */}
-        <button
-          type="submit"
-          className="w-full py-3 rounded-xl font-bold text-white
-          bg-gradient-to-r from-purple-600 to-indigo-600
-          hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-1
-          transition-all duration-300"
-        >
-          Register ✨
-        </button>
+          <p className="text-center text-white/60 text-sm mt-6">
+            Already Have Account?{" "}
+            <span
+              onClick={() => router.push("/login")}
+              className="text-white font-semibold cursor-pointer hover:underline"
+            >
+              Login
+            </span>
+          </p>
+        </div>
 
-        {/* FOOTER */}
-        <p className="text-center text-white/50 text-sm mt-6">
-          Already have an account?{" "}
-          <span
-            onClick={() => router.push("/login")}
-            className="text-white font-semibold cursor-pointer hover:underline"
-          >
-            Login
-          </span>
-        </p>
+        {/* RIGHT SIDE (SAME ANIMATED DESIGN) */}
+        <div className="hidden md:flex w-1/2 relative items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
 
-      </form>
+          <div className="absolute w-72 h-72 bg-purple-500 rounded-full blur-3xl opacity-40 animate-pulse top-10 left-10"></div>
+          <div className="absolute w-72 h-72 bg-indigo-500 rounded-full blur-3xl opacity-40 animate-pulse bottom-10 right-10"></div>
+          <div className="absolute w-72 h-72 bg-pink-500 rounded-full blur-3xl opacity-30 animate-ping top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+
+          <div className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 px-10 py-8 rounded-3xl text-center text-white animate-bounce">
+            <h2 className="text-2xl font-bold mb-2">AdFlow Pro</h2>
+            <p className="text-white/70 text-sm">
+              Smart Ads. Better Reach. Faster Growth 🚀
+            </p>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }

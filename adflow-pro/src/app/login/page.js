@@ -30,109 +30,44 @@
 //   };
 
 //   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-500 to-blue-600 p-4">
+//     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6">
 
-//       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+//       <div className="w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex">
 
-//         <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
-//           Login
-//         </h1>
+//         {/* LEFT SIDE */}
+//         <div className="hidden md:flex w-1/2 relative bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 text-white p-10 items-center">
 
-//         <form onSubmit={handleLogin} className="space-y-5">
+//           {/* Big curved circle */}
+//           <div className="absolute left-[-80px] w-[400px] h-[400px] bg-gradient-to-br from-indigo-600 to-purple-700 rounded-full"></div>
 
-//           <input
-//             type="email"
-//             placeholder="Email"
-//             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900"
-//             value={email}
-//             onChange={(e) => setEmail(e.target.value)}
-//             required
-//           />
+//           {/* small circles */}
+//           <div className="absolute bottom-10 left-10 w-24 h-24 bg-indigo-500 rounded-full opacity-60"></div>
+//           <div className="absolute bottom-0 left-0 w-40 h-40 bg-purple-800 rounded-full opacity-40"></div>
 
-//           <input
-//             type="password"
-//             placeholder="Password"
-//             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900"
-//             value={password}
-//             onChange={(e) => setPassword(e.target.value)}
-//             required
-//           />
+//           {/* text */}
+//           <div className="relative z-10">
+//             <h1 className="text-4xl font-bold mb-4">WELCOME</h1>
+//             <p className="text-sm text-white/80 max-w-xs">
+//               Manage and promote your ads smartly with AdFlow Pro.
+//               Grow faster, reach more audience, and track everything in one place.
+//             </p>
+//           </div>
+//         </div>
 
-//           <button
-//             type="submit"
-//             disabled={loading}
-//             className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition"
-//           >
-//             {loading ? "Logging in..." : "Login"}
-//           </button>
+//         {/* RIGHT SIDE */}
+//         <div className="w-full md:w-1/2 bg-white p-10 flex flex-col justify-center">
 
-//         </form>
+//           <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+//             Sign in
+//           </h2>
 
-//       </div>
-//     </div>
-//   );
-// }
-
-// "use client";
-
-// import { useState } from "react";
-// import { useRouter } from "next/navigation";
-// import { supabase } from "../../lib/supabase";
-
-// export default function Login() {
-//   const router = useRouter();
-
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [loading, setLoading] = useState(false);
-
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-
-//     const { error } = await supabase.auth.signInWithPassword({
-//       email,
-//       password,
-//     });
-
-//     setLoading(false);
-
-//     if (error) {
-//       alert(error.message);
-//     } else {
-//       router.push("/dashboard");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 p-4">
-
-//       {/* background glow orbs */}
-//       <div className="absolute w-72 h-72 bg-pink-500 rounded-full blur-3xl opacity-30 top-10 left-10 animate-pulse"></div>
-//       <div className="absolute w-72 h-72 bg-blue-500 rounded-full blur-3xl opacity-30 bottom-10 right-10 animate-pulse"></div>
-//       <div className="absolute w-72 h-72 bg-purple-400 rounded-full blur-3xl opacity-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-
-//       {/* Glass Card */}
-//       <div className="relative w-full max-w-md">
-
-//         <div className="backdrop-blur-2xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 transform transition duration-500 hover:scale-[1.02]">
-
-//           {/* Title */}
-//           <h1 className="text-4xl font-extrabold text-center text-white mb-2 tracking-wide">
-//             Welcome Back ✨
-//           </h1>
-
-//           <p className="text-center text-white/70 mb-8 text-sm">
-//             Login to continue your journey
-//           </p>
-
-//           <form onSubmit={handleLogin} className="space-y-5">
+//           <form onSubmit={handleLogin} className="space-y-4">
 
 //             {/* Email */}
 //             <input
 //               type="email"
-//               placeholder="Enter your email"
-//               className="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 outline-none focus:ring-2 focus:ring-purple-400 transition"
+//               placeholder="User Name / Email"
+//               className="w-full p-3 rounded-lg bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
 //               value={email}
 //               onChange={(e) => setEmail(e.target.value)}
 //               required
@@ -141,27 +76,39 @@
 //             {/* Password */}
 //             <input
 //               type="password"
-//               placeholder="Enter your password"
-//               className="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 outline-none focus:ring-2 focus:ring-purple-400 transition"
+//               placeholder="Password"
+//               className="w-full p-3 rounded-lg bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
 //               value={password}
 //               onChange={(e) => setPassword(e.target.value)}
 //               required
 //             />
 
+//             {/* Remember */}
+//             <label className="text-sm text-gray-500 flex items-center">
+//               <input type="checkbox" className="mr-2" />
+//               Remember me
+//             </label>
+
 //             {/* Button */}
 //             <button
 //               type="submit"
 //               disabled={loading}
-//               className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300"
+//               className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition"
 //             >
-//               {loading ? "Logging in..." : "Login 🚀"}
+//               {loading ? "Signing in..." : "Sign in"}
 //             </button>
 
 //           </form>
 
-//           {/* small footer text */}
-//           <p className="text-center text-white/50 text-xs mt-6">
-//             Secure login powered by Supabase
+//           {/* Footer */}
+//           <p className="text-center text-gray-500 text-sm mt-6">
+//             Don’t have an account?{" "}
+//             <span
+//               onClick={() => router.push("/register")}
+//               className="text-indigo-600 cursor-pointer font-semibold"
+//             >
+//               Register now
+//             </span>
 //           </p>
 
 //         </div>
@@ -187,78 +134,130 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    setLoading(false);
-
     if (error) {
       alert(error.message);
-    } else {
+      setLoading(false);
+      return;
+    }
+
+    const user = data?.user;
+
+    if (!user) {
+      alert("Auth failed");
+      setLoading(false);
+      return;
+    }
+
+    // 👤 PROFILE FETCH (NOW SAFE)
+    const { data: profile, error: roleError } = await supabase
+      .from("users")
+      .select("role, status")
+      .eq("email", user.email)
+      .maybeSingle();
+
+    setLoading(false);
+
+    if (roleError) {
+      alert(roleError.message);
+      return;
+    }
+
+    if (!profile) {
+      alert("User data not found");
+      return;
+    }
+
+    // 🚫 BLOCK CHECK (NOW SAFE)
+    if (profile.status === "blocked") {
+      alert("Your account is blocked");
+      return;
+    }
+
+    // 🚀 ROLE ROUTING (SAME LOGIC)
+    if (profile.role === "client") {
       router.push("/dashboard");
+    } else if (profile.role === "moderator") {
+      router.push("/dashboard");
+    } else if (profile.role === "admin") {
+      router.push("dashboard");
+    } else if (profile.role === "super_admin") {
+      router.push("/dashboard");
+    } else {
+      router.push("/");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6">
 
-      {/* background glow orbs (same vibe as dashboard) */}
-      <div className="absolute w-72 h-72 bg-purple-500 rounded-full blur-3xl opacity-30 top-10 left-10 animate-pulse"></div>
-      <div className="absolute w-72 h-72 bg-indigo-500 rounded-full blur-3xl opacity-30 bottom-10 right-10 animate-pulse"></div>
-      <div className="absolute w-72 h-72 bg-pink-500 rounded-full blur-3xl opacity-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex">
 
-      {/* Glass Card */}
-      <div className="relative w-full max-w-md">
+        {/* LEFT SIDE (SAME DESIGN) */}
+        <div className="hidden md:flex w-1/2 relative bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 text-white p-10 items-center">
 
-        <div className="backdrop-blur-2xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 transform transition duration-500 hover:scale-[1.02]">
+          <div className="absolute left-[-80px] w-[400px] h-[400px] bg-gradient-to-br from-indigo-600 to-purple-700 rounded-full"></div>
 
-          {/* Title */}
-          <h1 className="text-4xl font-extrabold text-center text-white mb-2 tracking-wide">
-            Welcome Back ✨
-          </h1>
+          <div className="absolute bottom-10 left-10 w-24 h-24 bg-indigo-500 rounded-full opacity-60"></div>
+          <div className="absolute bottom-0 left-0 w-40 h-40 bg-purple-800 rounded-full opacity-40"></div>
 
-          <p className="text-center text-white/60 mb-8 text-sm">
-            Login to continue your journey
-          </p>
+          <div className="relative z-10">
+            <h1 className="text-4xl font-bold mb-4">WELCOME</h1>
+            <p className="text-sm text-white/80 max-w-xs">
+              Manage and promote your ads smartly with AdFlow Pro.
+            </p>
+          </div>
+        </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+        {/* RIGHT SIDE (SAME DESIGN) */}
+        <div className="w-full md:w-1/2 bg-white p-10 flex flex-col justify-center">
 
-            {/* Email */}
+          <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+            Sign in
+          </h2>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+
             <input
               type="email"
-              placeholder="Enter your email"
-              className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-indigo-400 transition"
+              placeholder="Email"
+              className="w-full p-3 rounded-lg bg-gray-100 border border-gray-200"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
 
-            {/* Password */}
             <input
               type="password"
-              placeholder="Enter your password"
-              className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-indigo-400 transition"
+              placeholder="Password"
+              className="w-full p-3 rounded-lg bg-gray-100 border border-gray-200"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
 
-            {/* Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg hover:shadow-indigo-500/40 transform hover:-translate-y-1 transition-all duration-300"
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg"
             >
-              {loading ? "Logging in..." : "Login 🚀"}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
 
           </form>
 
-          {/* footer */}
-          <p className="text-center text-white/40 text-xs mt-6">
-            Secure login powered by Supabase
+          <p className="text-center text-gray-500 text-sm mt-6">
+            Don’t have an account?{" "}
+            <span
+              onClick={() => router.push("/register")}
+              className="text-indigo-600 cursor-pointer font-semibold"
+            >
+              Register now
+            </span>
           </p>
 
         </div>
@@ -266,109 +265,3 @@ export default function Login() {
     </div>
   );
 }
-
-// "use client";
-
-// import { useState } from "react";
-// import { useRouter } from "next/navigation";
-// import { supabase } from "../../../lib/supabase";
-
-// export default function Login() {
-//   const router = useRouter();
-
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [loading, setLoading] = useState(false);
-
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-
-//     const { data, error } = await supabase.auth.signInWithPassword({
-//       email,
-//       password,
-//     });
-
-//     if (error) {
-//       setLoading(false);
-//       alert(error.message);
-//       return;
-//     }
-
-//     // 👇 GET USER ROLE (from users table)
-//     const { data: profile } = await supabase
-//       .from("profiles")
-//       .select("role")
-//       .eq("id", data.user.id)
-//       .single();
-
-//     setLoading(false);
-
-//     // 👇 ROLE BASED REDIRECT
-//     if (profile?.role === "admin") {
-//       router.push("/admin-dashboard");
-//     } else {
-//       router.push("/dashboard");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-4">
-
-//       {/* background glow orbs */}
-//       <div className="absolute w-72 h-72 bg-purple-500 rounded-full blur-3xl opacity-30 top-10 left-10 animate-pulse"></div>
-//       <div className="absolute w-72 h-72 bg-indigo-500 rounded-full blur-3xl opacity-30 bottom-10 right-10 animate-pulse"></div>
-//       <div className="absolute w-72 h-72 bg-pink-500 rounded-full blur-3xl opacity-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-
-//       {/* Glass Card */}
-//       <div className="relative w-full max-w-md">
-
-//         <div className="backdrop-blur-2xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 transform transition duration-500 hover:scale-[1.02]">
-
-//           <h1 className="text-4xl font-extrabold text-center text-white mb-2 tracking-wide">
-//             Welcome Back ✨
-//           </h1>
-
-//           <p className="text-center text-white/60 mb-8 text-sm">
-//             Login to continue your journey
-//           </p>
-
-//           <form onSubmit={handleLogin} className="space-y-5">
-
-//             <input
-//               type="email"
-//               placeholder="Enter your email"
-//               className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-indigo-400 transition"
-//               value={email}
-//               onChange={(e) => setEmail(e.target.value)}
-//               required
-//             />
-
-//             <input
-//               type="password"
-//               placeholder="Enter your password"
-//               className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-indigo-400 transition"
-//               value={password}
-//               onChange={(e) => setPassword(e.target.value)}
-//               required
-//             />
-
-//             <button
-//               type="submit"
-//               disabled={loading}
-//               className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg hover:shadow-indigo-500/40 transform hover:-translate-y-1 transition-all duration-300"
-//             >
-//               {loading ? "Logging in..." : "Login 🚀"}
-//             </button>
-
-//           </form>
-
-//           <p className="text-center text-white/40 text-xs mt-6">
-//             Secure login powered by Supabase
-//           </p>
-
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
