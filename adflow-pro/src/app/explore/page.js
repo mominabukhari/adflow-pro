@@ -9,9 +9,13 @@ export default function Explore() {
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [bookmarks, setBookmarks] = useState([]);
 
   useEffect(() => {
-    fetchAds(); 
+    fetchAds();
+
+    const saved = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+    setBookmarks(saved);
   }, []);
 
   const fetchAds = async () => {
@@ -45,7 +49,28 @@ export default function Explore() {
     return "BASIC (7 DAYS)";
   };
 
-  const filteredAds = ads.filter((ad) =>
+  const toggleBookmark = (adId) => {
+    let updated = [];
+
+    if (bookmarks.includes(adId)) {
+      updated = bookmarks.filter((id) => id !== adId);
+    } else {
+      updated = [...bookmarks, adId];
+    }
+
+    setBookmarks(updated);
+    localStorage.setItem("bookmarks", JSON.stringify(updated));
+  };
+
+  // 🔥 NEW: bookmarked ads first
+  const sortedAds = [...ads].sort((a, b) => {
+    const aSaved = bookmarks.includes(a.id) ? 1 : 0;
+    const bSaved = bookmarks.includes(b.id) ? 1 : 0;
+
+    return bSaved - aSaved;
+  });
+
+  const filteredAds = sortedAds.filter((ad) =>
     ad.title.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -84,11 +109,28 @@ export default function Explore() {
 
       <div className="grid md:grid-cols-3 gap-6 relative z-10">
         {filteredAds.map((ad) => (
-          <div key={ad.id} className="group bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-lg hover:scale-[1.03] transition shadow-lg">
-            <img src={ad.media_url || "https://via.placeholder.com/300"} className="w-full h-44 object-cover group-hover:scale-110 transition" />
+          <div
+            key={ad.id}
+            className="group bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-lg hover:scale-[1.03] transition shadow-lg"
+          >
+            <img
+              src={ad.media_url || "https://via.placeholder.com/300"}
+              className="w-full h-44 object-cover group-hover:scale-110 transition"
+            />
+
             <div className="p-4">
               <h2 className="text-lg font-bold">{ad.title}</h2>
               <p className="text-white/60 text-sm mt-1">{ad.description}</p>
+
+              {/* Bookmark moved to bottom */}
+              <div className="flex justify-end mt-3">
+                <button
+                  onClick={() => toggleBookmark(ad.id)}
+                  className="text-xl"
+                >
+                  {bookmarks.includes(ad.id) ? "🔖" : "📑"}
+                </button>
+              </div>
             </div>
           </div>
         ))}

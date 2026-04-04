@@ -70,10 +70,42 @@ export default function Login() {
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6">
+  // 🔥 FIXED + RATE LIMIT SAFE Forgot Password
+  let lastRequestTime = 0;
 
-      <div className="w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex">
+  const handleForgotPassword = async () => {
+    const now = Date.now();
+
+    // ⛔ Prevent spam requests (fixes "rate limit exceeded")
+    if (now - lastRequestTime < 30000) {
+      alert("Please wait 30 seconds before requesting again");
+      return;
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      alert("Please enter a valid email first");
+      return;
+    }
+
+    lastRequestTime = now;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
+      redirectTo: window.location.origin + "/reset-password",
+    });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Password reset link sent to your email");
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6 overflow-y-auto">
+
+      <div className="w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
 
         {/* LEFT SIDE */}
         <div className="hidden md:flex w-1/2 relative bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 text-white p-10 items-center">
@@ -91,7 +123,7 @@ export default function Login() {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="w-full md:w-1/2 bg-white p-10 flex flex-col justify-center">
+        <div className="w-full md:w-1/2 bg-white p-6 md:p-10 flex flex-col justify-center">
 
           <h2 className="text-3xl font-semibold text-gray-800 mb-6">
             Sign in
@@ -136,6 +168,14 @@ export default function Login() {
             </button>
 
           </form>
+
+          {/* FORGOT PASSWORD */}
+          <p
+            onClick={handleForgotPassword}
+            className="text-right text-sm text-indigo-600 mt-2 cursor-pointer hover:underline"
+          >
+            Forgot Password?
+          </p>
 
           <p className="text-center text-gray-500 text-sm mt-6">
             Don’t have an account?{" "}

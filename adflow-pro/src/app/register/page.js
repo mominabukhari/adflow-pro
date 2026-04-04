@@ -35,13 +35,12 @@ export default function Register() {
         return;
       }
 
-      // 👇 SAFE INSERT (status FIX added)
       const { error: insertError } = await supabase.from("users").insert([
         {
           id: user.id,
           email: user.email,
           role: "client",
-          status: "active", // ✅ FIX ADDED
+          status: "active",
         },
       ]);
 
@@ -63,12 +62,12 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6 overflow-y-auto">
 
-      <div className="w-full max-w-5xl flex rounded-3xl overflow-hidden shadow-2xl">
+      <div className="w-full max-w-5xl flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl">
 
         {/* LEFT FORM SIDE (SAME DESIGN) */}
-        <div className="w-full md:w-1/2 p-10 bg-white/10 backdrop-blur-2xl border-r border-white/20">
+        <div className="w-full md:w-1/2 p-6 md:p-10 bg-white/10 backdrop-blur-2xl border-r border-white/20">
           
           <h1 className="text-3xl font-bold text-white text-center mb-8">
             Register
