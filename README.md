@@ -5,7 +5,7 @@ It allows users to create, manage, and explore advertisements with advanced feat
 
 🌐 Live Demo
 
- 
+ https://adflow-pro-ashen.vercel.app/
 
 📌 Features
 🔐 Authentication & Role Management
@@ -25,7 +25,7 @@ Schedule ads for future publishing
 📊 Analytics Dashboard
 Track performance
 View engagement
-💳 Payment Verification (if implemented)
+💳 Payment Verification 
 👤 Test Accounts
 
 You can use the following credentials to test the system:
