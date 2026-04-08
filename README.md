@@ -47,3 +47,15 @@ Frontend: Next.js, React
 Backend: Node.js, Express
 Database: MongoDB
 Styling: Tailwind CSS
+
+⚙️ Installation & Setup
+1. Clone the repository:
+git clone https://github.com/mominabukhari/adflow-pro.git
+2. Navigate to project folder:
+cd adflow-pro
+3. Install dependencies:
+npm install
+4. Run the development server:
+npm run dev
+5. Open in browser:
+http://localhost:3000
