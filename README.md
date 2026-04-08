@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+🚀 AdFlow Pro
 
-## Getting Started
+AdFlow Pro is a Sponsored Listing Marketplace built using the MERN/Next.js stack.
+It allows users to create, manage, and explore advertisements with advanced features like moderation, scheduling, analytics, and role-based access control.
 
-First, run the development server:
+🌐 Live Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+ 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+📌 Features
+🔐 Authentication & Role Management
+User
+Admin
+Moderator
+Super Admin
+📢 Ad Management
+Create Ads
+Edit/Delete Ads
+View Listings
+🛡️ Moderation System
+Approve/Reject Ads
+Content control
+⏰ Scheduling System
+Schedule ads for future publishing
+📊 Analytics Dashboard
+Track performance
+View engagement
+💳 Payment Verification (if implemented)
+👤 Test Accounts
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+You can use the following credentials to test the system:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+👤 User
+Email: user@gmail.com
+Password: user123
+🛠️ Admin
+Email: admin@gmail.com
+Password: admin123
+🛡️ Moderator
+Email: moderator@gmail.com
+Password: moderator123
+👑 Super Admin
+Email: superadmin@gmail.com
+Password: superadmin123
+🛠️ Tech Stack
+Frontend: Next.js, React
+Backend: Node.js, Express
+Database: MongoDB
+Styling: Tailwind CSS
