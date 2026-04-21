@@ -1,61 +1,102 @@
 🚀 AdFlow Pro
-
-AdFlow Pro is a Sponsored Listing Marketplace built using the MERN/Next.js stack.
-It allows users to create, manage, and explore advertisements with advanced features like moderation, scheduling, analytics, and role-based access control.
+AdFlow Pro is a modern Sponsored Listing Marketplace built using Next.js and Supabase, designed to simplify the process of creating, managing, and promoting advertisements.
+It offers a powerful system with role-based access control, ad moderation, scheduling, analytics, and secure payment verification, making it ideal for scalable digital marketplace solutions.
 
 🌐 Live Demo
+🔗 https://adflow-pro-ashen.vercel.app/
 
- https://adflow-pro-ashen.vercel.app/
+✨ Key Features
+🔐 Authentication & Role-Based Access
+Secure authentication powered by Supabase Auth
 
-📌 Features
-🔐 Authentication & Role Management
-User
-Admin
-Moderator
-Super Admin
+Role-based access control:
+👤 User
+🛠️ Admin
+🛡️ Moderator
+👑 Super Admin
+
+Protected routes and dashboards
 📢 Ad Management
-Create Ads
-Edit/Delete Ads
-View Listings
+Create, edit, and delete ads
+Upload ad images via URL
+Organized listing system
+Real-time updates using Supabase
+
 🛡️ Moderation System
-Approve/Reject Ads
-Content control
+Moderator approval workflow
+Approve or reject advertisements
+Maintain platform quality and control
+
 ⏰ Scheduling System
 Schedule ads for future publishing
+Automatic activation based on time
+Better campaign planning
+
 📊 Analytics Dashboard
-Track performance
-View engagement
-💳 Payment Verification 
+Monitor ad performance
+Track engagement and activity
+Data-driven insights
+
+💳 Payment Verification
+Submit transaction ID
+Upload payment screenshot (URL-based)
+Verification before ad approval
+
 👤 Test Accounts
-
-You can use the following credentials to test the system:
-
-👤 User
-Email: user@gmail.com
-Password: user123
-🛠️ Admin
-Email: admin@gmail.com
-Password: admin123
-🛡️ Moderator
-Email: moderator@gmail.com
-Password: moderator123
-👑 Super Admin
-Email: superadmin@gmail.com
-Password: superadmin123
+Role	Email	Password
+👤 User	user@gmail.com
+	user123
+🛠️ Admin	admin@gmail.com
+	admin123
+🛡️ Moderator	moderator@gmail.com
+	moderator123
+👑 Super Admin	superadmin@gmail.com
+	superadmin123
+ 
 🛠️ Tech Stack
-Frontend: Next.js, React
-Backend: Node.js, Express
-Database: MongoDB
-Styling: Tailwind CSS
+Frontend
+Next.js
+React.js
+Backend / BaaS
+Supabase (Database + Auth + APIs)
+Database
+PostgreSQL (via Supabase)
+Styling
+Tailwind CSS
+
+📁 Project Structure (Simplified)
+adflow-pro/
+│── app/
+│── components/
+│── lib/          
+│── services/
+│── public/
+│── styles/
 
 ⚙️ Installation & Setup
-1. Clone the repository:
+1️⃣ Clone Repository
 git clone https://github.com/mominabukhari/adflow-pro.git
-2. Navigate to project folder:
+2️⃣ Navigate to Project
 cd adflow-pro
-3. Install dependencies:
+3️⃣ Install Dependencies
 npm install
-4. Run the development server:
+4️⃣ Setup Environment Variables
+Create a .env.local file:
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+5️⃣ Run Development Server
 npm run dev
-5. Open in browser:
+6️⃣ Open in Browser
 http://localhost:3000
+
+🚀 Future Enhancements
+🔔 Real-time notifications
+💬 Chat system for users
+⭐ Featured ads & ranking system
+📈 Advanced analytics dashboard
+
+🤝 Contribution
+Feel free to fork the repository and submit pull requests.
+
+👩‍💻 Author
+Developed by Momina Bukhari
