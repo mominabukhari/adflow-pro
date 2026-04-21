@@ -123,30 +123,42 @@ adflow-pro/
 
 ---
 
-## ⚙️ Installation & Setup
+⚙️ Installation & Setup
 1️⃣ Clone Repository
-```bash
 git clone https://github.com/mominabukhari/adflow-pro.git
+
 2️⃣ Navigate to Project
 cd adflow-pro
+
 3️⃣ Install Dependencies
 npm install
+
 4️⃣ Setup Environment Variables
-Create a .env.local file:
+Create a .env.local file and add:
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+
 5️⃣ Run Development Server
 npm run dev
+
 6️⃣ Open in Browser
 http://localhost:3000
+http://localhost:3000
+
+---
+
 🚀 Future Enhancements
 🔔 Real-time notifications
 💬 Chat system for users
 ⭐ Featured ads & ranking system
 📈 Advanced analytics dashboard
 
+---
+
 🤝 Contribution
 Pull requests are welcome. For major changes, please open an issue first to discuss improvements.
+
+---
 
 👩‍💻 Author
 Developed by Momina Bukhari
