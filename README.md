@@ -34,7 +34,7 @@ It simplifies the process of creating, managing, and promoting advertisements wi
 ![Admin](screenshots/admin.png)
 
 ### 👑 Super Admin Panel
-![Super_Admin](screenshots/superadmin.png)
+![Super Admin](screenshots/super_admin.png)
 
 ---
 
