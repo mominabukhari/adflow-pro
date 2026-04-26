@@ -16,12 +16,19 @@ export default function CreateAd() {
     type: "basic",
     transaction_id: "",
     payment_screenshot: "",
+    city_id: "",
+    category_id: "",
   });
 
   const [loading, setLoading] = useState(false);
 
+  const [cities, setCities] = useState([]);
+  const [categories, setCategories] = useState([]);
+
   useEffect(() => {
     getUser();
+    fetchCities();
+    fetchCategories();
   }, []);
 
   const getUser = async () => {
@@ -36,11 +43,33 @@ export default function CreateAd() {
     setUser(data.user);
   };
 
+  const fetchCities = async () => {
+    const { data, error } = await supabase.from("cities").select("*");
+
+    if (!error) {
+      setCities(data || []);
+    }
+  };
+
+  const fetchCategories = async () => {
+    const { data, error } = await supabase.from("categories").select("*");
+
+    if (!error) {
+      setCategories(data || []);
+    }
+  };
+
   const packages = [
     { name: "basic", label: "Basic", days: 7, weight: 1, color: "border-gray-500/40" },
     { name: "standard", label: "Standard", days: 15, weight: 2, color: "border-blue-500/50" },
     { name: "premium", label: "Premium", days: 30, weight: 3, color: "border-purple-500/60" },
   ];
+
+  const priceMap = {
+    basic: 100,
+    standard: 200,
+    premium: 400,
+  };
 
   const createAd = async (e) => {
     e.preventDefault();
@@ -54,7 +83,6 @@ export default function CreateAd() {
 
     const selectedPackage = packages.find(p => p.name === form.type);
 
-    // ✅ STEP 1: ADS TABLE
     const { data: adData, error: adError } = await supabase
       .from("ads")
       .insert([
@@ -66,9 +94,12 @@ export default function CreateAd() {
           type: form.type,
           package_weight: selectedPackage.weight,
           status: "draft",
-
-          // required extra fields
-          slug: form.title?.toLowerCase().trim().replace(/\s+/g, "-"),
+          price: priceMap[form.type],
+          city_id: form.city_id,
+          category_id: form.category_id,
+          slug: form.title
+            ? form.title.toLowerCase().trim().replace(/\s+/g, "-")
+            : "ad-" + Date.now(),
           is_featured: false,
           moderator_note: null,
           publish_at: null,
@@ -84,7 +115,6 @@ export default function CreateAd() {
 
     const adId = adData[0].id;
 
-    // ✅ STEP 2: AD MEDIA TABLE
     if (form.media_url) {
       await supabase.from("ad_media").insert({
         ad_id: adId,
@@ -92,14 +122,12 @@ export default function CreateAd() {
       });
     }
 
-    // ✅ STEP 3: PAYMENTS TABLE (FIXED FIELD NAME)
     await supabase.from("payments").insert({
       ad_id: adId,
       transaction_ref: form.transaction_id,
       payment_screenshot: form.payment_screenshot,
     });
 
-    // ✅ STEP 4: STATUS HISTORY TABLE
     await supabase.from("ads_status_history").insert({
       ad_id: adId,
       previous_status: null,
@@ -147,6 +175,32 @@ export default function CreateAd() {
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
 
+        {/* CATEGORY */}
+        <select
+          className="w-full p-3 mb-4 rounded-xl bg-black/40 border border-white/10 text-white outline-none"
+          onChange={(e) => setForm({ ...form, category_id: e.target.value })}
+        >
+          <option value="" className="text-black">Select Category</option>
+          {(categories || []).map(cat => (
+            <option key={cat.id} value={cat.id} className="text-black">
+              {cat.name}
+            </option>
+          ))}
+        </select>
+
+        {/* CITY */}
+        <select
+          className="w-full p-3 mb-4 rounded-xl bg-black/40 border border-white/10 text-white outline-none"
+          onChange={(e) => setForm({ ...form, city_id: e.target.value })}
+        >
+          <option value="" className="text-black">Select City</option>
+          {(cities || []).map(city => (
+            <option key={city.id} value={city.id} className="text-black">
+              {city.name}
+            </option>
+          ))}
+        </select>
+
         <input
           type="text"
           placeholder="Transaction ID"
@@ -156,9 +210,10 @@ export default function CreateAd() {
           }
         />
 
+        {/* ONLY CHANGE HERE */}
         <input
-          type="text"
-          placeholder="Payment Screenshot URL"
+          type="url"
+          placeholder="Payment Screenshot Image URL"
           className="w-full p-3 mb-5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-purple-400 transition"
           onChange={(e) =>
             setForm({ ...form, payment_screenshot: e.target.value })
@@ -186,6 +241,10 @@ export default function CreateAd() {
 
             <span className="ml-2 font-semibold text-white">
               {pkg.label}
+            </span>
+
+            <span className="ml-2 text-sm text-green-300">
+              (PKR {priceMap[pkg.name]})
             </span>
 
             <span className="ml-2 text-sm text-white/60">

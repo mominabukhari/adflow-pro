@@ -40,23 +40,43 @@ export default function Login() {
       .eq("email", user.email)
       .maybeSingle();
 
-    setLoading(false);
-
     if (roleError) {
       alert(roleError.message);
+      setLoading(false);
       return;
     }
 
     if (!profile) {
       alert("User data not found");
+      setLoading(false);
       return;
     }
 
     if (profile.status === "blocked") {
       alert("Your account is blocked");
+      setLoading(false);
       return;
     }
 
+    // 🔥 NEW: WALLET AUTO CREATE (ONLY ADDITION)
+    const { data: wallet } = await supabase
+      .from("wallets")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    if (!wallet) {
+      await supabase.from("wallets").insert([
+        {
+          user_id: user.id,
+          balance: 500,
+        },
+      ]);
+    }
+
+    setLoading(false);
+
+    // role-based routing
     if (profile.role === "client") {
       router.push("/dashboard");
     } else if (profile.role === "moderator") {
@@ -70,13 +90,11 @@ export default function Login() {
     }
   };
 
-  // 🔥 FIXED + RATE LIMIT SAFE Forgot Password
   let lastRequestTime = 0;
 
   const handleForgotPassword = async () => {
     const now = Date.now();
 
-    // ⛔ Prevent spam requests (fixes "rate limit exceeded")
     if (now - lastRequestTime < 30000) {
       alert("Please wait 30 seconds before requesting again");
       return;
@@ -131,28 +149,26 @@ export default function Login() {
 
           <form onSubmit={handleLogin} className="space-y-4">
 
-            {/* EMAIL */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
               <input
                 type="email"
-                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400"
+                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
 
-            {/* PASSWORD */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
               <input
                 type="password"
-                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400"
+                className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -169,7 +185,6 @@ export default function Login() {
 
           </form>
 
-          {/* FORGOT PASSWORD */}
           <p
             onClick={handleForgotPassword}
             className="text-right text-sm text-indigo-600 mt-2 cursor-pointer hover:underline"

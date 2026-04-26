@@ -65,35 +65,27 @@ export default function AdminPage() {
     });
   };
 
-  // 🔥 FIXED VERIFY & PUBLISH (FINAL SAFE VERSION)
+  // ✅ FIXED: publish flow stable (Explore compatible)
   const verifyAndPublish = async (ad) => {
     try {
       setActionLoading(ad.id);
 
-      console.log("Clicked Ad:", ad);
-
-      if (!ad?.id) {
-        console.log("Missing ad.id");
-        return;
-      }
+      if (!ad?.id) return;
 
       if (ad.status !== "payment_submitted") {
-        console.log("Invalid status:", ad.status);
+        alert("Ad is not ready for publishing");
         return;
       }
 
       const { data, error } = await supabase
         .from("ads")
         .update({
-          status: "published",
+          status: "published", // ✅ FINAL STATUS (Explore reads this)
           payment_verified: true,
           published_at: new Date().toISOString(),
         })
         .eq("id", ad.id)
         .select();
-
-      console.log("Update Response:", data);
-      console.log("Update Error:", error);
 
       if (error) {
         alert("Update failed: " + error.message);
@@ -101,7 +93,7 @@ export default function AdminPage() {
       }
 
       if (!data || data.length === 0) {
-        alert("No row updated (ID mismatch or RLS issue)");
+        alert("No row updated (check RLS or ID)");
         return;
       }
 
@@ -110,7 +102,11 @@ export default function AdminPage() {
       setAds((prev) =>
         prev.map((item) =>
           item.id === ad.id
-            ? { ...item, status: "published", payment_verified: true }
+            ? {
+                ...item,
+                status: "published",
+                payment_verified: true,
+              }
             : item
         )
       );
@@ -118,7 +114,6 @@ export default function AdminPage() {
       alert("Ad successfully published!");
 
     } catch (err) {
-      console.log("Unexpected Error:", err);
       alert("Something went wrong");
     } finally {
       setActionLoading(null);

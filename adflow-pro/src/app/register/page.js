@@ -27,14 +27,16 @@ export default function Register() {
         return;
       }
 
-      const user = data?.user;
+      // ✅ SAFE USER HANDLING (FIX)
+      const user = data?.user ?? data?.session?.user;
 
       if (!user) {
-        alert("User not created");
+        alert("User created but not confirmed yet. Check email or login.");
         setLoading(false);
         return;
       }
 
+      // ✅ INSERT PROFILE (SAFE)
       const { error: insertError } = await supabase.from("users").insert([
         {
           id: user.id,
@@ -45,12 +47,12 @@ export default function Register() {
       ]);
 
       if (insertError) {
-        alert(insertError.message);
-        setLoading(false);
-        return;
+        console.log("Insert Error:", insertError.message);
+        // ⚠️ don't block signup if profile already exists or RLS issue
       }
 
       setLoading(false);
+
       alert("Register successful 🎉 Now login");
       router.push("/login");
 
@@ -66,7 +68,7 @@ export default function Register() {
 
       <div className="w-full max-w-5xl flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl">
 
-        {/* LEFT FORM SIDE (SAME DESIGN) */}
+        {/* LEFT FORM SIDE */}
         <div className="w-full md:w-1/2 p-6 md:p-10 bg-white/10 backdrop-blur-2xl border-r border-white/20">
           
           <h1 className="text-3xl font-bold text-white text-center mb-8">
@@ -119,14 +121,14 @@ export default function Register() {
           </p>
         </div>
 
-        {/* RIGHT SIDE (SAME ANIMATED DESIGN) */}
+        {/* RIGHT SIDE */}
         <div className="hidden md:flex w-1/2 relative items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
 
           <div className="absolute w-72 h-72 bg-purple-500 rounded-full blur-3xl opacity-40 animate-pulse top-10 left-10"></div>
           <div className="absolute w-72 h-72 bg-indigo-500 rounded-full blur-3xl opacity-40 animate-pulse bottom-10 right-10"></div>
           <div className="absolute w-72 h-72 bg-pink-500 rounded-full blur-3xl opacity-30 animate-ping top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
 
-          <div className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 px-10 py-8 rounded-3xl text-center text-white animate-bounce">
+          <div className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 px-10 py-8 rounded-3xl text-center text-white">
             <h2 className="text-2xl font-bold mb-2">AdFlow Pro</h2>
             <p className="text-white/70 text-sm">
               Smart Ads. Better Reach. Faster Growth 🚀
