@@ -24,6 +24,9 @@ It simplifies the process of creating, managing, and promoting advertisements wi
 ### 👤 User Dashboard
 ![User](screenshots/user.png)
 
+### 💳 Wallet Page
+![Wallet](screenshots/wallet.png)
+
 ### 🛠️ Moderator Panel
 ![Moderator](screenshots/moderator.png)
 
@@ -143,7 +146,6 @@ npm run dev
 
 6️⃣ Open in Browser
 http://localhost:3000
-http://localhost:3000
 
 ---
 
@@ -161,4 +163,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ---
 
 👩‍💻 Author
-Developed by Momina Bukhari
+Developed by Momina Bukhari.
